@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Heart, MessageCircle, Sparkles, Stethoscope, MapPin, Play, Pause, Menu, X, Search, Music } from "lucide-react";
+import { Heart, MessageCircle, Sparkles, Stethoscope, MapPin, Play, Pause, Menu, X, Search, Music, Sun, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MusicalScroll } from "@/components/musical-scroll";
+import { useTheme } from "@/hooks/use-theme";
 import hero from "@/assets/hero.jpg";
 import session from "@/assets/session.jpg";
 
@@ -11,6 +14,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Conheça a musicoterapia, seus benefícios e como encontrar atendimento perto de você." },
       { property: "og:title", content: "Ondas de Cuidados — Musicoterapia e bem-estar" },
       { property: "og:description", content: "Informação, música e cuidado para todos." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -30,7 +35,7 @@ const btnOutline = `${btn} border-2 border-primary text-primary hover:bg-accent`
 
 function Logo() {
   return (
-    <a href="#inicio" className="flex items-center gap-2 text-deep">
+    <a href="#inicio" aria-label="Ondas de Cuidados — início" className="flex items-center gap-2 text-deep">
       <svg viewBox="0 0 40 40" className="h-9 w-9" aria-hidden>
         <circle cx="20" cy="20" r="19" className="fill-accent" />
         <path d="M6 20c3-6 5-6 7 0s4 6 7 0 4-6 7 0 4 6 7 0" className="stroke-deep" strokeWidth="2.5" fill="none" strokeLinecap="round" />
@@ -51,33 +56,42 @@ function Wave({ className = "" }: { className?: string }) {
 function Index() {
   const [open, setOpen] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="home relative isolate min-h-screen bg-background text-foreground">
+      <a href="#conteudo-principal" className="skip-link">Pular para o conteúdo principal</a>
+      <MusicalScroll />
       <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <Logo />
           <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
             {nav.map(([l, h]) => (
-              <a key={h} href={h} className="text-sm font-medium text-muted-foreground hover:text-deep">{l}</a>
+              <a key={h} href={h} aria-label={`Ir para ${l}`} className="text-sm font-medium text-muted-foreground hover:text-deep">{l}</a>
             ))}
-            <a href="#musicoterapia" className={btnPrimary}>Conheça a musicoterapia</a>
+            <Button asChild className={`${btnPrimary} h-auto`}><a href="#musicoterapia">Conheça a musicoterapia</a></Button>
           </nav>
-          <button className="lg:hidden text-deep" onClick={() => setOpen(!open)} aria-label="Abrir menu" aria-expanded={open}>
+          <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="min-h-11 min-w-11 rounded-full text-deep" onClick={toggleTheme} aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"} title={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}>
+            {theme === "dark" ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+          </Button>
+          <Button variant="ghost" size="icon" className="min-h-11 min-w-11 lg:hidden text-deep" onClick={() => setOpen(!open)} aria-label={open ? "Fechar menu principal" : "Abrir menu principal"} aria-expanded={open} aria-controls="menu-movel" onKeyDown={(event) => { if (event.key === "Escape") setOpen(false); }}>
             {open ? <X /> : <Menu />}
-          </button>
+          </Button>
+          </div>
         </div>
         {open && (
-          <nav className="flex flex-col gap-3 border-t border-border px-5 py-4 lg:hidden" aria-label="Menu móvel">
+          <nav id="menu-movel" className="flex flex-col gap-3 border-t border-border px-5 py-4 lg:hidden" aria-label="Menu móvel" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); document.querySelector<HTMLButtonElement>('[aria-controls="menu-movel"]')?.focus(); } }}>
             {nav.map(([l, h]) => (
-              <a key={h} href={h} onClick={() => setOpen(false)} className="py-1 text-deep">{l}</a>
+              <a key={h} href={h} aria-label={`Ir para ${l}`} onClick={() => setOpen(false)} className="py-2 text-deep">{l}</a>
             ))}
-            <a href="#musicoterapia" onClick={() => setOpen(false)} className={btnPrimary}>Conheça a musicoterapia</a>
+            <Button asChild className={`${btnPrimary} h-auto`}><a href="#musicoterapia" onClick={() => setOpen(false)}>Conheça a musicoterapia</a></Button>
           </nav>
         )}
       </header>
 
       {/* Hero */}
+      <div id="conteudo-principal" tabIndex={-1} className="content-start" />
       <section id="inicio" className="relative overflow-hidden">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 md:grid-cols-2 md:py-24">
           <div>
@@ -89,12 +103,11 @@ function Index() {
               A musicoterapia utiliza a música e seus elementos como parte de um processo terapêutico, promovendo experiências de expressão, comunicação e cuidado para diferentes pessoas e necessidades.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#beneficios" className={btnPrimary}>Descubra os benefícios</a>
-              <a href="#localizacao" className={btnOutline}>Encontre um centro</a>
+              <Button asChild className={`${btnPrimary} h-auto`}><a href="#beneficios">Descubra os benefícios</a></Button>
+              <Button asChild variant="outline" className={`${btnOutline} h-auto`}><a href="#localizacao">Encontre um centro</a></Button>
             </div>
           </div>
           <div className="relative">
-            <div className="absolute -inset-6 -z-10 rounded-[3rem] bg-beige/40 blur-2xl" />
             <img src={hero} alt="Ilustração de uma pessoa ouvindo música com fones, cercada por ondas sonoras suaves" width={1024} height={1024} className="w-full rounded-[2.5rem]" />
           </div>
         </div>
@@ -134,7 +147,7 @@ function Index() {
             </article>
           ))}
         </div>
-        <a href="#beneficios" className={`${btnOutline} mt-10`}>Explorar os benefícios</a>
+        <Button asChild variant="outline" className={`${btnOutline} mt-10 h-auto`}><a href="#beneficios">Explorar os benefícios</a></Button>
       </section>
 
       {/* Localização */}
@@ -150,7 +163,7 @@ function Index() {
                 <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ocean" aria-hidden />
                 <input id="cidade" placeholder="Digite sua cidade ou endereço" className="w-full rounded-full bg-card py-3 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sky" />
               </div>
-              <button type="submit" className={`${btn} bg-beige text-deep hover:bg-card`}><Search className="h-4 w-4" aria-hidden />Buscar locais</button>
+              <Button type="submit" variant="secondary" className={`${btn} h-auto bg-beige text-deep hover:bg-card`} aria-label="Buscar locais de musicoterapia na cidade informada"><Search className="h-4 w-4" aria-hidden />Buscar locais</Button>
             </form>
           </div>
           <div className="relative mx-auto aspect-square w-full max-w-xs" aria-hidden>
@@ -188,12 +201,12 @@ function Index() {
                   </div>
                   <h3 className="mt-3 text-lg font-semibold text-deep">{t}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{d}</p>
-                  <a href="#noticias" className="mt-4 inline-block text-sm font-semibold text-ocean hover:underline">Ler mais →</a>
+                   <a href="#noticias" aria-label={`Ler mais: ${t}`} className="mt-4 inline-block text-sm font-semibold text-ocean hover:underline">Ler mais →</a>
                 </div>
               </article>
             ))}
           </div>
-          <div className="mt-10 text-center"><a href="#noticias" className={btnPrimary}>Ver todas as notícias</a></div>
+          <div className="mt-10 text-center"><Button asChild className={`${btnPrimary} h-auto`}><a href="#noticias">Ver todas as notícias</a></Button></div>
         </div>
       </section>
 
@@ -212,9 +225,9 @@ function Index() {
             ))}
           </div>
           <div className="mt-8 flex items-center gap-5 rounded-3xl bg-card p-5">
-            <button onClick={() => setPlaying(!playing)} aria-label={playing ? "Pausar" : "Reproduzir"} className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-ocean">
+            <Button size="icon" onClick={() => setPlaying(!playing)} aria-label={playing ? "Pausar visualização musical" : "Iniciar visualização musical"} className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-ocean">
               {playing ? <Pause /> : <Play className="ml-1" />}
-            </button>
+            </Button>
             <div>
               <p className="font-hand text-xl text-ocean">sugestão musical</p>
               <p className="font-semibold text-deep">Espaço para uma música tranquila</p>
@@ -234,7 +247,7 @@ function Index() {
           <nav aria-label="Rodapé">
             <p className="font-semibold">Navegue</p>
             <ul className="mt-3 grid grid-cols-2 gap-2 text-sm text-primary-foreground/80">
-              {nav.map(([l, h]) => <li key={h}><a href={h} className="hover:text-sky">{l}</a></li>)}
+               {nav.map(([l, h]) => <li key={h}><a href={h} aria-label={`Ir para ${l}`} className="hover:text-sky">{l}</a></li>)}
             </ul>
           </nav>
           <div className="text-sm text-primary-foreground/80">
@@ -242,7 +255,7 @@ function Index() {
             <p className="mt-3">Projeto acadêmico de Front-end com finalidade educativa e informativa. Não substitui orientação de profissionais qualificados.</p>
           </div>
         </div>
-        <p className="border-t border-primary-foreground/15 py-5 text-center text-xs text-primary-foreground/60">© 2026 Ondas de Cuidados · Projeto acadêmico</p>
+        <p className="border-t border-primary-foreground/15 py-5 text-center text-xs text-primary-foreground/80">© 2026 Ondas de Cuidados · Projeto acadêmico</p>
       </footer>
     </div>
   );

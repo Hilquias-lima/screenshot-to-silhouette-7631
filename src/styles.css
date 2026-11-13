@@ -25,6 +25,8 @@
   --color-sky: var(--sky);
   --color-ocean: var(--ocean);
   --color-deep: var(--deep);
+  --color-footer: var(--footer);
+  --color-footer-foreground: var(--footer-foreground);
   --shadow-soft: 0 12px 32px -14px color-mix(in oklab, var(--deep) 30%, transparent);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -72,7 +74,7 @@
   --radius: 1rem;
   --beige: oklch(0.9 0.03 75);
   --sky: oklch(0.8 0.06 245);
-  --ocean: oklch(0.6 0.12 250);
+  --ocean: oklch(0.43 0.09 250);
   --deep: oklch(0.4 0.09 248);
   --background: oklch(0.99 0.006 80);
   --foreground: oklch(0.32 0.06 248);
@@ -93,6 +95,10 @@
   --border: oklch(0.9 0.02 75);
   --input: oklch(0.88 0.02 75);
   --ring: oklch(0.6 0.12 250);
+  --footer: oklch(0.32 0.07 248);
+  --footer-foreground: oklch(0.99 0.006 80);
+  --score: oklch(0.43 0.09 250);
+  --score-opacity: 0.12;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -109,25 +115,31 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
+  --beige: oklch(0.31 0.023 75);
+  --sky: oklch(0.83 0.06 245);
+  --ocean: oklch(0.81 0.07 245);
+  --deep: oklch(0.94 0.025 245);
+  --background: oklch(0.19 0.012 245);
   --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
+  --card: oklch(0.245 0.015 245);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
+  --primary: oklch(0.83 0.06 245);
   --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
+  --secondary: oklch(0.235 0.014 245);
   --secondary-foreground: oklch(0.984 0.003 247.858);
   --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.8 0.018 245);
+  --accent: oklch(0.285 0.028 245);
   --accent-foreground: oklch(0.984 0.003 247.858);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
+  --ring: oklch(0.83 0.06 245);
+  --score: oklch(0.83 0.06 245);
+  --score-opacity: 0.1;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -156,5 +168,62 @@
 
 @layer base {
   body { font-family: "Lora", Georgia, serif; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 7rem; color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 5px; }
+  a, button, input { -webkit-tap-highlight-color: transparent; }
+  * { letter-spacing: 0; }
+}
+
+.home > section, .home > footer { position: relative; z-index: 1; }
+.home > section.bg-secondary { background: color-mix(in oklab, var(--secondary) 84%, transparent); }
+.musical-scroll {
+  --unrevealed: 88%;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  clip-path: inset(0 0 var(--unrevealed) 0);
+  color: var(--score);
+}
+.musical-scroll svg { width: 100%; height: 100%; }
+.musical-waves { opacity: var(--score-opacity); }
+.musical-notes { opacity: calc(var(--score-opacity) + 0.04); }
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+.skip-link:focus { transform: translateY(0); }
+.content-start { scroll-margin-top: 6rem; }
+.home footer { background: var(--footer); color: var(--footer-foreground); }
+.home footer .text-primary-foreground { color: var(--footer-foreground); }
+.home footer .text-primary-foreground\/80 { color: color-mix(in oklab, var(--footer-foreground) 85%, var(--footer)); }
+.home footer .border-primary-foreground\/15 { border-color: color-mix(in oklab, var(--footer-foreground) 20%, var(--footer)); }
+.home #localizacao .text-sky { color: var(--primary-foreground); }
+.home #localizacao .text-primary-foreground\/80 { color: var(--primary-foreground); }
+.home #localizacao input { color: var(--card-foreground); }
+.home #localizacao button { color: var(--deep); }
+.dark .home #localizacao .hover\:bg-card:hover { background: var(--accent); }
+.home #musicas .bg-card p { overflow-wrap: anywhere; }
+.home #musicas > div { min-width: 0; }
+.home #musicas [aria-hidden] > span { min-width: 0; }
+
+@media (min-width: 1024px) {
+  .home header nav { gap: 1.1rem; }
+  .home header nav > a, .home header nav > button { font-size: 0.8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .musical-scroll { clip-path: none; }
+  .home article:hover { transform: none; }
 }
