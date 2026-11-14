@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Heart, MessageCircle, Sparkles, Stethoscope, MapPin, Play, Pause, Menu, X, Search, Music, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,7 +69,7 @@ function Index() {
             {nav.map(([l, h]) => (
               <a key={h} href={h} aria-label={`Ir para ${l}`} className="text-sm font-medium text-muted-foreground hover:text-deep">{l}</a>
             ))}
-            <Button asChild className={`${btnPrimary} h-auto`}><a href="#musicoterapia">Conheça a musicoterapia</a></Button>
+            <Button asChild className={`${btnPrimary} h-auto`}><Link to="/musicoterapia">Conheça a musicoterapia</Link></Button>
           </nav>
           <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="min-h-11 min-w-11 rounded-full text-deep" onClick={toggleTheme} aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"} title={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}>
@@ -85,7 +85,7 @@ function Index() {
             {nav.map(([l, h]) => (
               <a key={h} href={h} aria-label={`Ir para ${l}`} onClick={() => setOpen(false)} className="py-2 text-deep">{l}</a>
             ))}
-            <Button asChild className={`${btnPrimary} h-auto`}><a href="#musicoterapia" onClick={() => setOpen(false)}>Conheça a musicoterapia</a></Button>
+            <Button asChild className={`${btnPrimary} h-auto`}><Link to="/musicoterapia" onClick={() => setOpen(false)}>Conheça a musicoterapia</Link></Button>
           </nav>
         )}
       </header>
@@ -124,7 +124,7 @@ function Index() {
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
               A musicoterapia é uma prática terapêutica que utiliza a música e seus elementos em processos conduzidos por profissionais qualificados. Por meio de experiências musicais, pode favorecer a expressão, a comunicação, a interação e o bem-estar, conforme as necessidades e os objetivos de cada pessoa.
             </p>
-            <a href="#musicoterapia" className="mt-6 inline-block font-semibold text-ocean underline-offset-4 hover:underline">Saiba mais sobre a musicoterapia →</a>
+            <Link to="/musicoterapia" className="mt-6 inline-block font-semibold text-ocean underline-offset-4 hover:underline">Saiba mais sobre a musicoterapia →</Link>
           </div>
         </div>
       </section>

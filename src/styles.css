@@ -217,6 +217,43 @@
 .home #musicas > div { min-width: 0; }
 .home #musicas [aria-hidden] > span { min-width: 0; }
 
+:root {
+  --cover-foreground: oklch(0.99 0.006 80);
+  --cover-shade: oklch(0.22 0.035 248 / 86%);
+}
+.knowledge-cover { color: var(--cover-foreground); min-height: 440px; }
+.knowledge-cover-shade { background: var(--cover-shade); }
+.knowledge-page section[id], .pioneer-detail { scroll-margin-top: 6rem; }
+.knowledge-page p, .knowledge-page h1, .knowledge-page h2, .knowledge-page h3 { overflow-wrap: break-word; }
+.history-scroll { position: relative; height: 270vh; }
+.history-sticky { position: sticky; top: 80px; padding: 40px 0; }
+.history-viewport { overflow: hidden; }
+.history-track { display: flex; gap: 24px; width: max-content; padding: 0 max(20px, calc((100vw - 1152px) / 2)); will-change: transform; }
+.history-item { width: 340px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 8px; background: var(--card); padding: 24px; }
+.evidence-graphic { margin: 24px 0 8px; color: var(--ocean); }
+.evidence-graphic svg { width: 100%; height: 88px; }
+.graphic-line { stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.graphic-guide { stroke: var(--border); stroke-width: 1; }
+.graphic-node { fill: var(--accent); stroke: var(--ocean); stroke-width: 2; }
+@media (max-width: 767px), (max-height: 720px) {
+  .history-sticky { padding: 24px 0; }
+  .history-item { width: 300px; padding: 20px; }
+  .history-item .mt-6 { margin-top: 16px; }
+}
+@media (max-width: 767px) {
+  .history-scroll { height: auto; }
+  .history-sticky { position: static; }
+  .history-viewport { overflow-x: auto; scroll-snap-type: x mandatory; }
+  .history-item { width: min(300px, calc(100vw - 48px)); scroll-snap-align: center; }
+  .history-track { will-change: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .history-scroll { height: auto; }
+  .history-sticky { position: static; }
+  .history-viewport { overflow-x: auto; }
+  .history-track { will-change: auto; }
+}
+
 @media (min-width: 1024px) {
   .home header nav { gap: 1.1rem; }
   .home header nav > a, .home header nav > button { font-size: 0.8rem; }

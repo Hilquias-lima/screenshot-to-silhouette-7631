@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MusicoterapiaRouteImport } from './routes/musicoterapia'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MusicoterapiaRoute = MusicoterapiaRouteImport.update({
+  id: '/musicoterapia',
+  path: '/musicoterapia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/musicoterapia': typeof MusicoterapiaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/musicoterapia': typeof MusicoterapiaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/musicoterapia': typeof MusicoterapiaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/musicoterapia'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/musicoterapia'
+  id: '__root__' | '/' | '/musicoterapia'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MusicoterapiaRoute: typeof MusicoterapiaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/musicoterapia': {
+      id: '/musicoterapia'
+      path: '/musicoterapia'
+      fullPath: '/musicoterapia'
+      preLoaderRoute: typeof MusicoterapiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MusicoterapiaRoute: MusicoterapiaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
